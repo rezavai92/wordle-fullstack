@@ -9,7 +9,7 @@ import CustomToastComponent from "../app-toast/toast.component";
 import { Dropdown,Button} from "react-bootstrap";
 import axios from 'axios'
 const AppBoardComponent = () => {
-  const word = "skill";
+ 
   const [boardStat, setBoardStat] = useState([]);
   const [erasable, setErasable] = useState(false);
   const [currentRow, setCurrentRow] = useState(0);
@@ -20,15 +20,20 @@ const AppBoardComponent = () => {
   const [resultObject, setResultObject] = useState({});
   const[alreadyIn,setAlreadyIn] = useState([]);
   const [showInvalidWordToast,setShowInvalidWordToast] = useState(false)
+  const [wordOfTheDay,setWordOftheDay] = useState("")
   let mappedBoard = [];
 
   useEffect(() => {
 
     axios.get("/gtw").then((res)=>{
+
+      setWordOftheDay(res.data.word);
       console.log("ser res",res)
     }).catch((err)=>{
-      console.log("init error",err)
-    })
+      console.log("init error",err);
+    }
+    
+    )
     
 
     if(window.localStorage.getItem("boardStat")){
@@ -165,7 +170,7 @@ const AppBoardComponent = () => {
          //update already in
     updateAlreadyInLetters(triedWord.split(''))
 
-    if (triedWord === word) {
+    if (triedWord === wordOfTheDay) {
       verdict = "win";
       gameOver = true;
       setIsGameOver(true);
@@ -177,7 +182,7 @@ const AppBoardComponent = () => {
     let trackLetter ={};
     let misplaced ={};
 
-    word.split("").forEach((letter)=>{
+    wordOfTheDay.split("").forEach((letter)=>{
       const val = letter.toLowerCase();
       if(val in trackLetter){
         trackLetter[val]++;
@@ -191,7 +196,7 @@ const AppBoardComponent = () => {
       (col, index) => {
         let newStatus = "";
         let char = col.value.toLowerCase();
-        if (word.includes(char) && char !== word[index]) {
+        if (wordOfTheDay.includes(char) && char !== wordOfTheDay[index]) {
           
           
           if(misplaced[char]){
@@ -204,7 +209,7 @@ const AppBoardComponent = () => {
          
           
         } 
-        else if (char === word[index]) {
+        else if (char === wordOfTheDay[index]) {
   
     
           newStatus = "correct";
@@ -232,7 +237,7 @@ const AppBoardComponent = () => {
     const finalVerdictedBoardStatRow = verdictedBoardStatRow.map((col,index)=>{
 
       const currentChar = col.value.toLowerCase();
-      if(misplaced[currentChar]>0 && word.includes(currentChar) && word[index]!==currentChar ){
+      if(misplaced[currentChar]>0 && wordOfTheDay.includes(currentChar) && wordOfTheDay[index]!==currentChar ){
 
         const foundCorrectCharList = copiedVerdictBoardStatRow.filter((m)=>{
 

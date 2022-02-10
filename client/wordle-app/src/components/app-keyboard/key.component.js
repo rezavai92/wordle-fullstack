@@ -16,6 +16,41 @@ const KeyboardKey =(props)=>{
 		backgroundColor : "white",
 		color : "black"
 	}
+	const correctKeyStyle ={
+		backgroundColor : "#82dd55",
+		color : "white"
+	}
+	
+
+	function checkCorrectLetterSoFar(){
+		let boardStat = JSON.parse(window.localStorage.getItem("boardStat"));
+		let flatArray=[]
+		if(boardStat){
+			let correctLetters  = boardStat.map((row)=>{
+				return row.filter((col)=>{
+					return col.status === "correct"
+				}).map((m)=>m.value)
+			}).filter(row=>row.length>0);
+
+			correctLetters.forEach((arr)=>{
+				flatArray=[...flatArray,...arr];
+
+				flatArray =  Array.from(new Set(flatArray)).map(letter=>letter.toLowerCase());
+			})
+
+
+			if(flatArray.includes(props.cellKey.toLowerCase())){
+				return true;
+			}
+
+			return false;
+			console.log("correct letters" , correctLetters)
+		}
+
+		
+		
+	}
+	
 	function checkAlreadyIn(letter){
 
 		if(alreadyIn.includes(letter.toLowerCase())){
@@ -32,6 +67,7 @@ const KeyboardKey =(props)=>{
 	let enterKeyStyle = {
 		width : "63px"
 	}
+	
 
 	if(max400.matches){
 		enterKeyStyle.width = "30px";
@@ -50,6 +86,9 @@ const KeyboardKey =(props)=>{
 
 	if(checkEnterKey(props.cellKey)){
 		commonStyle = Object.assign(commonStyle,enterKeyStyle);
+	}
+	if(checkCorrectLetterSoFar()){
+		commonStyle = Object.assign(commonStyle,correctKeyStyle);
 	}
 
 

@@ -30,8 +30,10 @@
 	width: 100%;
 }
 .setting-share-flex div {
-	margin : 8px;
+	margin-right : 4px;
 }
+
+
 
 .setting-share-flex div:hover{
 	cursor: pointer;
@@ -55,7 +57,12 @@
 	color : white;
 	width: 100%;
 	display: flex;
+	margin-right: 8px;
 	justify-content: center;
+}
+.opn-rslt-btn{
+	width: 55.68px !important;
+	height: 38px !important;
 }
 
 @media screen and (max-width : 600px) {

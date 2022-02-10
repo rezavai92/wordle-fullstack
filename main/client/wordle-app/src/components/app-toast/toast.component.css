@@ -1,7 +1,7 @@
 .green{
 	background-color: #32a852 !important;
 	color: white !important;
-	
+	text-align: center;
 }
 
 .white{
@@ -9,4 +9,9 @@
 	color: black !important;
 	text-align: center;
 	
+}
+.red{
+	background-color: red !important;
+	color: white !important;
+	text-align: center;
 }

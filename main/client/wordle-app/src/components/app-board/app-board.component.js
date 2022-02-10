@@ -3,8 +3,10 @@ import "./app-board.component.css";
 import KeyBoardComponent from "../app-keyboard/keyboard.component";
 import AppBoardCellComponent from "../app-board/app-board-cell.component";
 import AppResultModalComponent from "../app-result/app-result-modal.component";
+import { getWordTranslation } from "../../services/common.service";
 import { Container } from "react-bootstrap";
-
+import CustomToastComponent from "../app-toast/toast.component";
+import { Dropdown,Button} from "react-bootstrap";
 const AppBoardComponent = () => {
   const word = "skill";
   const [boardStat, setBoardStat] = useState([]);
@@ -16,6 +18,7 @@ const AppBoardComponent = () => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultObject, setResultObject] = useState({});
   const[alreadyIn,setAlreadyIn] = useState([]);
+  const [showInvalidWordToast,setShowInvalidWordToast] = useState(false)
   let mappedBoard = [];
 
   useEffect(() => {
@@ -130,21 +133,27 @@ const AppBoardComponent = () => {
     }
   }
 
-
+  
   function evaluate() {
+
+   
     let verdict = "";
     let triedWord = "";
     let currentBoardStat = [...boardStat];
     let gameOver = isGameOver;
-    console.log("current board stat",currentBoardStat[currentRow])
+   // console.log("current board stat",currentBoardStat[currentRow])
 
     triedWord = currentBoardStat[currentRow]
       .map((col) => {
         return col.value;
       })
       .join("");
+
     triedWord = triedWord.toLowerCase();
-    //update already in
+
+   
+    getWordTranslation(triedWord).then((res)=>{
+         //update already in
     updateAlreadyInLetters(triedWord.split(''))
 
     if (triedWord === word) {
@@ -209,7 +218,7 @@ const AppBoardComponent = () => {
    
 
     const copiedVerdictBoardStatRow = [...verdictedBoardStatRow]
-    console.log("copied row",copiedVerdictBoardStatRow)
+   // console.log("copied row",copiedVerdictBoardStatRow)
 
     const finalVerdictedBoardStatRow = verdictedBoardStatRow.map((col,index)=>{
 
@@ -221,7 +230,7 @@ const AppBoardComponent = () => {
           return m.value.toLowerCase() === currentChar && m.status==="correct";
           
         });
-        console.log("found correct char list",foundCorrectCharList)
+        //console.log("found correct char list",foundCorrectCharList)
 
        const remainingCorrectChar = trackLetter[currentChar] - foundCorrectCharList.length;
 
@@ -239,7 +248,7 @@ const AppBoardComponent = () => {
 
     currentBoardStat[currentRow] = [...finalVerdictedBoardStatRow];
 
-    console.log("currentBoard stat ", currentBoardStat)
+   // console.log("currentBoard stat ", currentBoardStat)
     setBoardStat([...currentBoardStat]);
     window.localStorage.setItem("boardStat",JSON.stringify(currentBoardStat));
 
@@ -287,22 +296,37 @@ const AppBoardComponent = () => {
     }
 
 
+
+
+    }).catch((error)=>{
+
+    //  console.log("error ",error)
+
+      setShowInvalidWordToast(true);
+    
+    })
+    
+ 
+
   }
 
-  
+  function handleInvalidWordToastClose(){
+    setShowInvalidWordToast(false);
+  }
+
   function updateAlreadyInLetters(letters){
 
-    console.log("n1 ",alreadyIn)
+   // console.log("n1 ",alreadyIn)
     const currentAlreadyIn = [...alreadyIn];
 
     const newAlreadyIn = [...currentAlreadyIn,...letters]
-    console.log("n ",newAlreadyIn)
+   // console.log("n ",newAlreadyIn)
     const n = Array.from(new Set(newAlreadyIn));
    
     setAlreadyIn(n);
     window.localStorage.setItem("alreadyIn",JSON.stringify(n));
   }
-  console.log("current game stat ", gamestat);
+  //console.log("current game stat ", gamestat);
 
   function updateRowAndCol(command) {
     if (!isGameOver) {
@@ -334,7 +358,7 @@ const AppBoardComponent = () => {
   }
 
   function closeResultModal(){
-    console.log("closing result modal")
+    //console.log("closing result modal")
     setShowResultModal(false)
   }
 
@@ -396,7 +420,7 @@ const AppBoardComponent = () => {
     });
   });
 
-  console.log("board", boardStat);
+  //console.log("board", boardStat);
 
   return (
     <Container>
@@ -408,15 +432,26 @@ const AppBoardComponent = () => {
         </div>
         <div className="setting-share-flex">
            <div>
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-gear-fill" viewBox="0 0 16 16">
+           <Dropdown >
+              <Dropdown.Toggle variant="success" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-gear-fill" viewBox="0 0 16 16">
               <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
             </svg>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item href="https://github.com/rezavai92/wordle-fullstack">Github</Dropdown.Item>
+                <Dropdown.Item href="mailto:rezaink1996@gmail.com">Feedback</Dropdown.Item>
+                <Dropdown.Item href="https://rezavai92.github.io/" >My Profile</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+         
            </div>
-           <div onClick={()=>{ openResultModal()}}>
+           <Button  className="opn-rslt-btn" variant="success" onClick={()=>{ openResultModal()}}>
            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-share-fill" viewBox="0 0 16 16">
   <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
 </svg>
-           </div>
+           </Button>
         </div>
         </div>
         <div>
@@ -428,6 +463,9 @@ const AppBoardComponent = () => {
             return <div key={index} className="row"> {row} </div>;
           })}
         </div>
+       
+          { showInvalidWordToast && <CustomToastComponent toastMessage="Invalid Word" toastPosition="middle-center" background ="red" color ="white" onCloseToast={handleInvalidWordToastClose} /> }
+        
 
         <div  className="keyboard-wrapper">
           <KeyBoardComponent

@@ -1,0 +1,29 @@
+.graph{
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: start;
+	width: 100%;
+	height: 100%;
+	padding : 8px 16px;
+}
+
+.graph-cell{
+	width: 40px;
+	height: 20px;
+	display: flex;
+	justify-content: right;
+	padding: 8px;
+	align-items: center;
+	margin : 5px;
+	font-weight: bold;
+	color: white;
+}
+
+.bar-sl-flex{
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	align-items: center;
+}
+

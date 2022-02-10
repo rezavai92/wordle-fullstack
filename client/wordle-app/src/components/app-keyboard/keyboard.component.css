@@ -1,0 +1,23 @@
+.keyboard{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	
+}
+.first-row{
+	display: flex;
+	flex-direction: row;
+	margin : 2px 0px;
+}
+.second-row{
+	display: flex;
+	flex-direction: row;
+	margin : 2px 0px;
+}
+.third-row{
+	display: flex;
+	flex-direction: row;
+	margin : 2px 0px;
+}

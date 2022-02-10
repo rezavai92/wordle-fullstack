@@ -7,6 +7,7 @@ import { getWordTranslation } from "../../services/common.service";
 import { Container } from "react-bootstrap";
 import CustomToastComponent from "../app-toast/toast.component";
 import { Dropdown,Button} from "react-bootstrap";
+import axios from 'axios'
 const AppBoardComponent = () => {
   const word = "skill";
   const [boardStat, setBoardStat] = useState([]);
@@ -22,6 +23,14 @@ const AppBoardComponent = () => {
   let mappedBoard = [];
 
   useEffect(() => {
+
+    axios.get("/gtw").then((res)=>{
+      console.log("ser res",res)
+    }).catch((err)=>{
+      console.log("init error",err)
+    })
+    
+
     if(window.localStorage.getItem("boardStat")){
       setBoardStat(JSON.parse(window.localStorage.getItem("boardStat")));
     }

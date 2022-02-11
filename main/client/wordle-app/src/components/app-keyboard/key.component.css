@@ -1,38 +1,33 @@
-.keyboard-key{
-	width: 43px;
-	height: 58px;
-	background-color: silver;
-	margin : 2px;
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border : 2px solid silver;
-	border-radius: 4px;
-	text-transform: capitalize;
-	cursor: pointer;
-	
+.keyboard-key {
+  width: 43px;
+  height: 58px;
+  background-color: silver;
+  margin: 2px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid silver;
+  border-radius: 4px;
+  text-transform: capitalize;
+  cursor: pointer;
 }
 
-.keyboard-key:hover{
-	border : 2px solid white;
+.keyboard-key:hover {
+  border: 2px solid white;
 }
-@media  screen and (max-width : 600px) {
-	.keyboard-key{
-		width: 33px;
-		height: 48px;
-		font-size: 12px;
-	
-		
-	}
+@media screen and (max-width: 600px) {
+  .keyboard-key {
+    width: 33px;
+    height: 48px;
+    font-size: 12px;
+  }
 }
 
-@media  screen and (max-width : 450px) {
-	.keyboard-key{
-		width: 27px;
-		height: 40px;
-		font-size: 10px;
-	
-		
-	}
+@media screen and (max-width: 450px) {
+  .keyboard-key {
+    width: 27px;
+    height: 40px;
+    font-size: 10px;
+  }
 }

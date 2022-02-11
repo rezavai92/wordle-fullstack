@@ -6,11 +6,10 @@ import AppResultModalComponent from "../app-result/app-result-modal.component";
 import { decrypt, getWordTranslation } from "../../services/common.service";
 import { Container } from "react-bootstrap";
 import CustomToastComponent from "../app-toast/toast.component";
-import { Dropdown,Button} from "react-bootstrap";
-import axios from 'axios'
+import { Dropdown, Button } from "react-bootstrap";
+import axios from "axios";
 
 const AppBoardComponent = () => {
- 
   const [boardStat, setBoardStat] = useState([]);
   const [erasable, setErasable] = useState(false);
   const [currentRow, setCurrentRow] = useState(0);
@@ -19,89 +18,89 @@ const AppBoardComponent = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultObject, setResultObject] = useState({});
-  const[alreadyIn,setAlreadyIn] = useState([]);
-  const [showInvalidWordToast,setShowInvalidWordToast] = useState(false)
-  const [wordOfTheDay,setWordOftheDay] = useState("")
+  const [alreadyIn, setAlreadyIn] = useState([]);
+  const [showInvalidWordToast, setShowInvalidWordToast] = useState(false);
+  const [wordOfTheDay, setWordOftheDay] = useState("");
   let mappedBoard = [];
 
   useEffect(() => {
+    axios
+      .get("/gtw")
+      .then((res) => {
+        const newWord = res.data.word;
+        const storedWord = window.localStorage.getItem("xyz");
 
-    axios.get("/gtw").then((res)=>{
+        if (newWord === storedWord) {
+        } else {
+          window.localStorage.clear();
+          window.localStorage.setItem("xyz", newWord);
+          window.localStorage.setItem("currentRow", 0);
+          window.localStorage.setItem("currentCol", 0);
+          window.localStorage.setItem(
+            "boardStat",
+            JSON.stringify([
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+              [
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+                { value: "", status: "unjudged" },
+              ],
+            ])
+          );
+          window.localStorage.setItem("gameStat", JSON.stringify([]));
+          window.localStorage.setItem("alreadyIn", JSON.stringify([]));
+          loadBoardStat();
+          setWordOftheDay(newWord);
+          loadCurrentRow();
+          loadCurrentCol();
+          loadIsGameOver();
+          loadResultObject();
+          loadGameStat();
+          loadAlreadInLetters();
+          loadWordOftheDay();
+        }
+        console.log("ser res", res);
+      })
+      .catch((err) => {
+        console.log("init error", err);
+      });
 
-      const newWord = res.data.word;
-      const storedWord = window.localStorage.getItem("xyz");
-
-      if(newWord === storedWord){
-
-      }
-      else{
-        window.localStorage.clear();
-        window.localStorage.setItem("xyz",newWord);
-        window.localStorage.setItem("currentRow",0);
-        window.localStorage.setItem("currentCol",0);
-        window.localStorage.setItem("boardStat",JSON.stringify([[
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],
-        [
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],
-        [
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],
-        [
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],
-        [
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],
-        [
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-          { value: "", status: "unjudged" },
-        ],]));
-        window.localStorage.setItem("gameStat",JSON.stringify([]));
-        window.localStorage.setItem("alreadyIn",JSON.stringify([]));
-        loadBoardStat();
-        setWordOftheDay(newWord);
-        loadCurrentRow();
-        loadCurrentCol();
-        loadIsGameOver();
-        loadResultObject();
-        loadGameStat();
-        loadAlreadInLetters();
-        loadWordOftheDay();
-      }
-      console.log("ser res",res)
-    }).catch((err)=>{
-      console.log("init error",err);
-    }
-    
-    )
-    
-
- 
     loadBoardStat();
     loadCurrentRow();
     loadCurrentCol();
@@ -110,16 +109,15 @@ const AppBoardComponent = () => {
     loadGameStat();
     loadAlreadInLetters();
     loadWordOftheDay();
-
-
-
   }, []);
 
-  function loadBoardStat(){
-    if(window.localStorage.getItem("boardStat") && JSON.parse(window.localStorage.getItem("boardStat")).length>0  ){
+  function loadBoardStat() {
+    if (
+      window.localStorage.getItem("boardStat") &&
+      JSON.parse(window.localStorage.getItem("boardStat")).length > 0
+    ) {
       setBoardStat(JSON.parse(window.localStorage.getItem("boardStat")));
-    }
-    else{
+    } else {
       setBoardStat([
         [
           { value: "", status: "unjudged" },
@@ -167,76 +165,62 @@ const AppBoardComponent = () => {
     }
   }
 
-  function loadWordOftheDay(){
-    if(window.localStorage.getItem("xyz")){
-      setWordOftheDay( window.localStorage.getItem("xyz"));
+  function loadWordOftheDay() {
+    if (window.localStorage.getItem("xyz")) {
+      setWordOftheDay(window.localStorage.getItem("xyz"));
+    } else {
+      window.localStorage.setItem("xyz", wordOfTheDay);
     }
-    else{
-      
-      window.localStorage.setItem("xyz",wordOfTheDay);
-    }
-
   }
-  function loadAlreadInLetters(){
-    if(window.localStorage.getItem("alreadyIn")){
-      setAlreadyIn( JSON.parse(window.localStorage.getItem("alreadyIn")));
-    }
-    else{
-      
-      window.localStorage.setItem("alreadyIn",JSON.stringify([]));
+  function loadAlreadInLetters() {
+    if (window.localStorage.getItem("alreadyIn")) {
+      setAlreadyIn(JSON.parse(window.localStorage.getItem("alreadyIn")));
+    } else {
+      window.localStorage.setItem("alreadyIn", JSON.stringify([]));
     }
   }
 
-  function loadGameStat (){
-    if(window.localStorage.getItem("gameStat")){
-      setGameStat( JSON.parse(window.localStorage.getItem("gameStat")));
-    }
-    else{
-      
-      window.localStorage.setItem("gameStat",JSON.stringify([]));
+  function loadGameStat() {
+    if (window.localStorage.getItem("gameStat")) {
+      setGameStat(JSON.parse(window.localStorage.getItem("gameStat")));
+    } else {
+      window.localStorage.setItem("gameStat", JSON.stringify([]));
     }
   }
 
-  function loadResultObject(){
-    if(window.localStorage.getItem("resultObject")) {
-      setResultObject( JSON.parse(window.localStorage.getItem("resultObject")) )
-
-    } 
-  }
-  function loadIsGameOver(){
-    if(window.localStorage.getItem("isGameOver")) {
-      setIsGameOver( JSON.parse(window.localStorage.getItem("isGameOver")) )
-
-    } 
-  }
-  function loadCurrentRow(){
-    if(window.localStorage.getItem("currentRow")) {
-      setCurrentRow( parseInt(window.localStorage.getItem("currentRow")) )
-
-    }
-    else{
-      window.localStorage.setItem("currentRow",currentRow);
+  function loadResultObject() {
+    if (window.localStorage.getItem("resultObject")) {
+      setResultObject(JSON.parse(window.localStorage.getItem("resultObject")));
     }
   }
-  function loadCurrentCol(){
-    if(window.localStorage.getItem("currentCol")) {
-      setCurrentCol( parseInt(window.localStorage.getItem("currentCol"))  )
+  function loadIsGameOver() {
+    if (window.localStorage.getItem("isGameOver")) {
+      setIsGameOver(JSON.parse(window.localStorage.getItem("isGameOver")));
     }
-    else{
-      window.localStorage.setItem("currentCol",currentCol);
+  }
+  function loadCurrentRow() {
+    if (window.localStorage.getItem("currentRow")) {
+      setCurrentRow(parseInt(window.localStorage.getItem("currentRow")));
+    } else {
+      window.localStorage.setItem("currentRow", currentRow);
+    }
+  }
+  function loadCurrentCol() {
+    if (window.localStorage.getItem("currentCol")) {
+      setCurrentCol(parseInt(window.localStorage.getItem("currentCol")));
+    } else {
+      window.localStorage.setItem("currentCol", currentCol);
     }
   }
 
-  console.log("word of the day",decrypt(wordOfTheDay))
-  
+  console.log("word of the day", decrypt(wordOfTheDay));
+
   function evaluate() {
-
-   
     let verdict = "";
     let triedWord = "";
     let currentBoardStat = [...boardStat];
     let gameOver = isGameOver;
-   // console.log("current board stat",currentBoardStat[currentRow])
+    // console.log("current board stat",currentBoardStat[currentRow])
 
     triedWord = currentBoardStat[currentRow]
       .map((col) => {
@@ -246,180 +230,178 @@ const AppBoardComponent = () => {
 
     triedWord = triedWord.toLowerCase();
 
-   
-    getWordTranslation(triedWord).then((res)=>{
-         //update already in
-    updateAlreadyInLetters(triedWord.split(''))
+    getWordTranslation(triedWord)
+      .then((res) => {
+        //update already in
+        updateAlreadyInLetters(triedWord.split(""));
 
-    if (triedWord ===  decrypt(wordOfTheDay) ) {
-      verdict = "win";
-      gameOver = true;
-      setIsGameOver(true);
-      window.localStorage.setItem("isGameOver",true)
-    } else {
-      verdict = "incorrect";
-    }
-    
-    let trackLetter ={};
-    let misplaced ={};
-
-    decrypt(wordOfTheDay).split("").forEach((letter)=>{
-      const val = letter.toLowerCase();
-      if(val in trackLetter){
-        trackLetter[val]++;
-      }
-      else{
-        trackLetter[val] = 1;
-      }
-    });
-  
-    const verdictedBoardStatRow = currentBoardStat[currentRow].map(
-      (col, index) => {
-        let newStatus = "";
-        let char = col.value.toLowerCase();
-        if (decrypt(wordOfTheDay).includes(char) && char !== decrypt(wordOfTheDay)[index]) {
-          
-          
-          if(misplaced[char]){
-            misplaced[char]++;
-          }
-          else{
-            misplaced[char] =1;
-          }
-          newStatus = "misplaced";
-         
-          
-        } 
-        else if (char === decrypt(wordOfTheDay)[index]) {
-  
-    
-          newStatus = "correct";
-          // if(char in misplaced){
-          //   misplaced[char]--;
-          // }
-        }
-         else{
-         
-          newStatus = "incorrect";
-        }
-
-        return { ...col, status: newStatus };
-      }
-
-
-    );
-
-    //filter verdictBoardStatRow
-   
-
-    const copiedVerdictBoardStatRow = [...verdictedBoardStatRow]
-   // console.log("copied row",copiedVerdictBoardStatRow)
-
-    const finalVerdictedBoardStatRow = verdictedBoardStatRow.map((col,index)=>{
-
-      const currentChar = col.value.toLowerCase();
-      if(misplaced[currentChar]>0 && decrypt(wordOfTheDay).includes(currentChar) && decrypt(wordOfTheDay)[index]!==currentChar ){
-
-        const foundCorrectCharList = copiedVerdictBoardStatRow.filter((m)=>{
-
-          return m.value.toLowerCase() === currentChar && m.status==="correct";
-          
-        });
-        //console.log("found correct char list",foundCorrectCharList)
-
-       const remainingCorrectChar = trackLetter[currentChar] - foundCorrectCharList.length;
-
-       if(remainingCorrectChar<1){
-         col.status = "incorrect"
-       }
-       else{
-         trackLetter[currentChar]--;
-       }
-
-      }
-
-      return col;
-    })
-
-    currentBoardStat[currentRow] = [...finalVerdictedBoardStatRow];
-
-   // console.log("currentBoard stat ", currentBoardStat)
-    setBoardStat([...currentBoardStat]);
-    window.localStorage.setItem("boardStat",JSON.stringify(currentBoardStat));
-
-    let currentGameStat = [...gamestat];
-    currentGameStat.push(verdict);
-    setGameStat([...currentGameStat]);
-    if (currentRow === 5) {
-      gameOver = true;
-      setIsGameOver(true);
-      window.localStorage.setItem("isGameOver",true);
-    }
-
-    if (verdict != "win" && !gameOver) {
-      unLockNextRow();
-    }
-
-    if (verdict === "win" || gameOver) {
-      const result = {
-        text: "",
-        tried: currentGameStat.length,
-        gameStat: currentGameStat,
-        boardStat: currentBoardStat,
-      };
-      if (gameOver) {
-        if (verdict === "win") {
-          result.text = "Congratulations! You have matched it.";
-          result.imgUrl = "assets/congo.jpg"
+        if (triedWord === decrypt(wordOfTheDay)) {
+          verdict = "win";
+          gameOver = true;
+          setIsGameOver(true);
+          window.localStorage.setItem("isGameOver", true);
         } else {
-          result.text = "You could not matach it today, Better luck next Day!";
+          verdict = "incorrect";
         }
-      }
 
-      setResultObject(result);
-      window.localStorage.setItem("resultObject",JSON.stringify(result));
-     setTimeout(()=>{ setShowResultModal(true);},1500);
+        let trackLetter = {};
+        let misplaced = {};
 
-   //  setCurrentCol(0);
-    // setCurrentRow(0);
-    // window.localStorage.setItem("currentRow",0);
-   //  window.localStorage.setItem("currentCol",0);
-   let currentLocalGameStat = JSON.parse(window.localStorage.getItem("gameStat"));
-   currentLocalGameStat.push(currentGameStat);
-   window.localStorage.setItem("gameStat",JSON.stringify(currentLocalGameStat))
-     
-    }
+        decrypt(wordOfTheDay)
+          .split("")
+          .forEach((letter) => {
+            const val = letter.toLowerCase();
+            if (val in trackLetter) {
+              trackLetter[val]++;
+            } else {
+              trackLetter[val] = 1;
+            }
+          });
 
+        const verdictedBoardStatRow = currentBoardStat[currentRow].map(
+          (col, index) => {
+            let newStatus = "";
+            let char = col.value.toLowerCase();
+            if (
+              decrypt(wordOfTheDay).includes(char) &&
+              char !== decrypt(wordOfTheDay)[index]
+            ) {
+              if (misplaced[char]) {
+                misplaced[char]++;
+              } else {
+                misplaced[char] = 1;
+              }
+              newStatus = "misplaced";
+            } else if (char === decrypt(wordOfTheDay)[index]) {
+              newStatus = "correct";
+              // if(char in misplaced){
+              //   misplaced[char]--;
+              // }
+            } else {
+              newStatus = "incorrect";
+            }
 
+            return { ...col, status: newStatus };
+          }
+        );
 
+        //filter verdictBoardStatRow
 
-    }).catch((error)=>{
+        const copiedVerdictBoardStatRow = [...verdictedBoardStatRow];
+        // console.log("copied row",copiedVerdictBoardStatRow)
 
-    //  console.log("error ",error)
+        const finalVerdictedBoardStatRow = verdictedBoardStatRow.map(
+          (col, index) => {
+            const currentChar = col.value.toLowerCase();
+            if (
+              misplaced[currentChar] > 0 &&
+              decrypt(wordOfTheDay).includes(currentChar) &&
+              decrypt(wordOfTheDay)[index] !== currentChar
+            ) {
+              const foundCorrectCharList = copiedVerdictBoardStatRow.filter(
+                (m) => {
+                  return (
+                    m.value.toLowerCase() === currentChar &&
+                    m.status === "correct"
+                  );
+                }
+              );
+              //console.log("found correct char list",foundCorrectCharList)
 
-      setShowInvalidWordToast(true);
-    
-    })
-    
- 
+              const remainingCorrectChar =
+                trackLetter[currentChar] - foundCorrectCharList.length;
 
+              if (remainingCorrectChar < 1) {
+                col.status = "incorrect";
+              } else {
+                trackLetter[currentChar]--;
+              }
+            }
+
+            return col;
+          }
+        );
+
+        currentBoardStat[currentRow] = [...finalVerdictedBoardStatRow];
+
+        // console.log("currentBoard stat ", currentBoardStat)
+        setBoardStat([...currentBoardStat]);
+        window.localStorage.setItem(
+          "boardStat",
+          JSON.stringify(currentBoardStat)
+        );
+
+        let currentGameStat = [...gamestat];
+        currentGameStat.push(verdict);
+        setGameStat([...currentGameStat]);
+        if (currentRow === 5) {
+          gameOver = true;
+          setIsGameOver(true);
+          window.localStorage.setItem("isGameOver", true);
+        }
+
+        if (verdict != "win" && !gameOver) {
+          unLockNextRow();
+        }
+
+        if (verdict === "win" || gameOver) {
+          const result = {
+            text: "",
+            tried: currentGameStat.length,
+            gameStat: currentGameStat,
+            boardStat: currentBoardStat,
+          };
+          if (gameOver) {
+            if (verdict === "win") {
+              result.text = "Congratulations! You have matched it.";
+              result.imgUrl = "assets/congo.jpg";
+            } else {
+              result.text =
+                "You could not matach it today, Better luck next Day!";
+            }
+          }
+
+          setResultObject(result);
+          window.localStorage.setItem("resultObject", JSON.stringify(result));
+          setTimeout(() => {
+            setShowResultModal(true);
+          }, 1500);
+
+          //  setCurrentCol(0);
+          // setCurrentRow(0);
+          // window.localStorage.setItem("currentRow",0);
+          //  window.localStorage.setItem("currentCol",0);
+          let currentLocalGameStat = JSON.parse(
+            window.localStorage.getItem("gameStat")
+          );
+          currentLocalGameStat.push(currentGameStat);
+          window.localStorage.setItem(
+            "gameStat",
+            JSON.stringify(currentLocalGameStat)
+          );
+        }
+      })
+      .catch((error) => {
+        //  console.log("error ",error)
+
+        setShowInvalidWordToast(true);
+      });
   }
 
-  function handleInvalidWordToastClose(){
+  function handleInvalidWordToastClose() {
     setShowInvalidWordToast(false);
   }
 
-  function updateAlreadyInLetters(letters){
-
-   // console.log("n1 ",alreadyIn)
+  function updateAlreadyInLetters(letters) {
+    // console.log("n1 ",alreadyIn)
     const currentAlreadyIn = [...alreadyIn];
 
-    const newAlreadyIn = [...currentAlreadyIn,...letters]
-   // console.log("n ",newAlreadyIn)
+    const newAlreadyIn = [...currentAlreadyIn, ...letters];
+    // console.log("n ",newAlreadyIn)
     const n = Array.from(new Set(newAlreadyIn));
-   
+
     setAlreadyIn(n);
-    window.localStorage.setItem("alreadyIn",JSON.stringify(n));
+    window.localStorage.setItem("alreadyIn", JSON.stringify(n));
   }
   //console.log("current game stat ", gamestat);
 
@@ -431,30 +413,28 @@ const AppBoardComponent = () => {
       if (command.toLowerCase() === "insert") {
         if (col < 5) {
           setCurrentCol(col + 1);
-          window.localStorage.setItem("currentCol",col+1)
+          window.localStorage.setItem("currentCol", col + 1);
         }
       }
 
       if (command.toLowerCase() === "erased") {
         if (col > 0) {
           setCurrentCol(col - 1);
-          window.localStorage.setItem("currentCol",col-1)
+          window.localStorage.setItem("currentCol", col - 1);
         }
       }
-
-      
     }
   }
 
-  function openResultModal(){
-    if(isGameOver){
-      setShowResultModal(true)
+  function openResultModal() {
+    if (isGameOver) {
+      setShowResultModal(true);
     }
   }
 
-  function closeResultModal(){
+  function closeResultModal() {
     //console.log("closing result modal")
-    setShowResultModal(false)
+    setShowResultModal(false);
   }
 
   function unLockNextRow() {
@@ -462,9 +442,9 @@ const AppBoardComponent = () => {
     const row = currentRow;
     if (col === 5) {
       setCurrentCol(0);
-      window.localStorage.setItem("currentCol",0)
+      window.localStorage.setItem("currentCol", 0);
       setCurrentRow(row + 1);
-      window.localStorage.setItem("currentRow",row+1);
+      window.localStorage.setItem("currentRow", row + 1);
     }
   }
 
@@ -480,37 +460,42 @@ const AppBoardComponent = () => {
         currentBoardStat[row][col] = { ...currentBoardCell, value: letter };
         updateRowAndCol("insert");
         setBoardStat([...currentBoardStat]);
-        window.localStorage.setItem("boardStat",JSON.stringify(currentBoardStat));
+        window.localStorage.setItem(
+          "boardStat",
+          JSON.stringify(currentBoardStat)
+        );
       }
-    
     }
 
     if (letter.toLowerCase() === "enter") {
-      if (col ===5 && !isGameOver ) {
+      if (col === 5 && !isGameOver) {
         evaluate();
       } else {
-       
       }
-    
     }
 
     if (letter.toLowerCase() === "erase") {
       if (col > 0 && col < 6 && !isGameOver) {
-        currentBoardStat[row][col - 1] = { status : "unjudged", value: "" };
+        currentBoardStat[row][col - 1] = { status: "unjudged", value: "" };
         updateRowAndCol("erased");
         setBoardStat([...currentBoardStat]);
-        window.localStorage.setItem("boardStat",JSON.stringify(currentBoardStat));
+        window.localStorage.setItem(
+          "boardStat",
+          JSON.stringify(currentBoardStat)
+        );
       }
-
-     
-    
     }
   }
 
   mappedBoard = boardStat.map((row) => {
-    return row.map((col,index) => {
+    return row.map((col, index) => {
       return (
-        <AppBoardCellComponent key={index} transition={index*1000} cellValue={col.value} status={col.status} />
+        <AppBoardCellComponent
+          key={index}
+          transition={index * 1000}
+          cellValue={col.value}
+          status={col.status}
+        />
       );
     });
   });
@@ -521,48 +506,81 @@ const AppBoardComponent = () => {
     <Container>
       <div className="board-wrapper">
         <div className="board-header">
-          <div className="w-100" ></div>
-        <div className="game-header">
-          WORDLE
-        </div>
-        <div className="setting-share-flex">
-           <div>
-           <Dropdown >
-              <Dropdown.Toggle variant="success" >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-gear-fill" viewBox="0 0 16 16">
-              <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-            </svg>
-              </Dropdown.Toggle>
+          <div className="w-100"></div>
+          <div className="game-header">WORDLE</div>
+          <div className="setting-share-flex">
+            <div>
+              <Dropdown>
+                <Dropdown.Toggle variant="success">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="white"
+                    class="bi bi-gear-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                  </svg>
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item href="https://github.com/rezavai92/wordle-fullstack">Github</Dropdown.Item>
-                <Dropdown.Item href="mailto:rezaink1996@gmail.com">Feedback</Dropdown.Item>
-                <Dropdown.Item href="https://rezavai92.github.io/" >My Profile</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-         
-           </div>
-           <Button  className="opn-rslt-btn" variant="success" onClick={()=>{ openResultModal()}}>
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-share-fill" viewBox="0 0 16 16">
-  <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
-</svg>
-           </Button>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="https://github.com/rezavai92/wordle-fullstack">
+                    Github
+                  </Dropdown.Item>
+                  <Dropdown.Item href="mailto:rezaink1996@gmail.com">
+                    Feedback
+                  </Dropdown.Item>
+                  <Dropdown.Item href="https://rezavai92.github.io/">
+                    My Profile
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+            <Button
+              className="opn-rslt-btn"
+              variant="success"
+              onClick={() => {
+                openResultModal();
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="white"
+                class="bi bi-share-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z" />
+              </svg>
+            </Button>
+          </div>
         </div>
-        </div>
-        <div>
-        
-        </div>
-        <hr style={{ width : "100%" , color : "white" }} />
+        <div></div>
+        <hr style={{ width: "100%", color: "white" }} />
         <div className="board">
-          {mappedBoard.map((row,index) => {
-            return <div key={index} className="row"> {row} </div>;
+          {mappedBoard.map((row, index) => {
+            return (
+              <div key={index} className="row">
+                {" "}
+                {row}{" "}
+              </div>
+            );
           })}
         </div>
-       
-          { showInvalidWordToast && <CustomToastComponent toastMessage="Invalid Word" toastPosition="middle-center" background ="red" color ="white" onCloseToast={handleInvalidWordToastClose} /> }
-        
 
-        <div  className="keyboard-wrapper">
+        {showInvalidWordToast && (
+          <CustomToastComponent
+            toastMessage="Invalid Word"
+            toastPosition="middle-center"
+            background="red"
+            color="white"
+            onCloseToast={handleInvalidWordToastClose}
+          />
+        )}
+
+        <div className="keyboard-wrapper">
           <KeyBoardComponent
             updateBoard={(letter) => {
               updateBoardStat(letter);
@@ -572,7 +590,10 @@ const AppBoardComponent = () => {
 
         {showResultModal && (
           <div>
-            <AppResultModalComponent  OnCloseResultModal= {closeResultModal} result={resultObject} />
+            <AppResultModalComponent
+              OnCloseResultModal={closeResultModal}
+              result={resultObject}
+            />
           </div>
         )}
       </div>

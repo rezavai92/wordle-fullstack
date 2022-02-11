@@ -1,55 +1,52 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.image {
+  margin-top: 0px;
+  width: 100%;
+  text-align: center;
+  margin-top: -15px;
+}
+.stat {
+  margin: 5px;
+}
+.copy-board {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+}
+.copy-row {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+}
 
-.body{
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+.copy-column {
+  display: flex;
+  flex-direction: row;
+  margin: 2px;
 }
-.image{
-	margin-top: 0px;
-	width: 100%;
-	text-align: center;
-	margin-top : -15px;
+.modal-footer {
+  justify-content: flex-start !important;
 }
-.stat{
-	margin : 5px;
+.modal-footer-body {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
-.copy-board{
-	display: flex;
-	flex-direction: column;
-	margin: 5px;
+.social-share {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
-.copy-row{
-	display: flex;
-	flex-direction: row;
-	margin: 5px;
+.social-share div {
+  margin-right: 4px;
 }
-
-.copy-column{
-	display: flex;
-	flex-direction: row;
-	margin : 2px;
-}
-.modal-footer{
-
-	justify-content: flex-start  !important;
-}
-.modal-footer-body{
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-}
-.social-share{
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-}
-.social-share div{
-	margin-right: 4px;
-}
-.result-body{
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	
+.result-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

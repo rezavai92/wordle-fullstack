@@ -1,25 +1,20 @@
-.cell{
-	display: flex;
-	border : 2px solid rgb(255, 237, 237);
-	border-radius: 5px;
-	width: 62px;
-	height: 62px;
-	margin: 2px;
-	text-align: center;
-	justify-content: center;
-	align-items: center;
-	font-weight: bold;
-	transition: 1s;
-	
+.cell {
+  display: flex;
+  border: 2px solid rgb(255, 237, 237);
+  border-radius: 5px;
+  width: 62px;
+  height: 62px;
+  margin: 2px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  transition: 1s;
 }
 
-
-@media  screen and (max-width : 600px) {
-	.cell{
-		width: 52px;
-		height: 52px;
-	
-		
-	}
+@media screen and (max-width: 600px) {
+  .cell {
+    width: 52px;
+    height: 52px;
+  }
 }
-

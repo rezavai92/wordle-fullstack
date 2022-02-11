@@ -3,11 +3,12 @@ import "./app-board.component.css";
 import KeyBoardComponent from "../app-keyboard/keyboard.component";
 import AppBoardCellComponent from "../app-board/app-board-cell.component";
 import AppResultModalComponent from "../app-result/app-result-modal.component";
-import { getWordTranslation } from "../../services/common.service";
+import { decrypt, getWordTranslation } from "../../services/common.service";
 import { Container } from "react-bootstrap";
 import CustomToastComponent from "../app-toast/toast.component";
 import { Dropdown,Button} from "react-bootstrap";
 import axios from 'axios'
+
 const AppBoardComponent = () => {
  
   const [boardStat, setBoardStat] = useState([]);
@@ -27,7 +28,71 @@ const AppBoardComponent = () => {
 
     axios.get("/gtw").then((res)=>{
 
-      setWordOftheDay(res.data.word);
+      const newWord = res.data.word;
+      const storedWord = window.localStorage.getItem("xyz");
+
+      if(newWord === storedWord){
+
+      }
+      else{
+        window.localStorage.clear();
+        window.localStorage.setItem("xyz",newWord);
+        window.localStorage.setItem("currentRow",0);
+        window.localStorage.setItem("currentCol",0);
+        window.localStorage.setItem("boardStat",JSON.stringify([[
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],
+        [
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],
+        [
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],
+        [
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],
+        [
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],
+        [
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+          { value: "", status: "unjudged" },
+        ],]));
+        window.localStorage.setItem("gameStat",JSON.stringify([]));
+        window.localStorage.setItem("alreadyIn",JSON.stringify([]));
+        loadBoardStat();
+        setWordOftheDay(newWord);
+        loadCurrentRow();
+        loadCurrentCol();
+        loadIsGameOver();
+        loadResultObject();
+        loadGameStat();
+        loadAlreadInLetters();
+        loadWordOftheDay();
+      }
       console.log("ser res",res)
     }).catch((err)=>{
       console.log("init error",err);
@@ -36,7 +101,22 @@ const AppBoardComponent = () => {
     )
     
 
-    if(window.localStorage.getItem("boardStat")){
+ 
+    loadBoardStat();
+    loadCurrentRow();
+    loadCurrentCol();
+    loadIsGameOver();
+    loadResultObject();
+    loadGameStat();
+    loadAlreadInLetters();
+    loadWordOftheDay();
+
+
+
+  }, []);
+
+  function loadBoardStat(){
+    if(window.localStorage.getItem("boardStat") && JSON.parse(window.localStorage.getItem("boardStat")).length>0  ){
       setBoardStat(JSON.parse(window.localStorage.getItem("boardStat")));
     }
     else{
@@ -85,18 +165,18 @@ const AppBoardComponent = () => {
         ],
       ]);
     }
+  }
 
-    loadCurrentRow();
-    loadCurrentCol();
-    loadIsGameOver();
-    loadResultObject();
-    loadGameStat();
-    loadAlreadInLetters();
+  function loadWordOftheDay(){
+    if(window.localStorage.getItem("xyz")){
+      setWordOftheDay( window.localStorage.getItem("xyz"));
+    }
+    else{
+      
+      window.localStorage.setItem("xyz",wordOfTheDay);
+    }
 
-
-
-  }, []);
-
+  }
   function loadAlreadInLetters(){
     if(window.localStorage.getItem("alreadyIn")){
       setAlreadyIn( JSON.parse(window.localStorage.getItem("alreadyIn")));
@@ -147,6 +227,7 @@ const AppBoardComponent = () => {
     }
   }
 
+  console.log("word of the day",decrypt(wordOfTheDay))
   
   function evaluate() {
 
@@ -170,7 +251,7 @@ const AppBoardComponent = () => {
          //update already in
     updateAlreadyInLetters(triedWord.split(''))
 
-    if (triedWord === wordOfTheDay) {
+    if (triedWord ===  decrypt(wordOfTheDay) ) {
       verdict = "win";
       gameOver = true;
       setIsGameOver(true);
@@ -182,7 +263,7 @@ const AppBoardComponent = () => {
     let trackLetter ={};
     let misplaced ={};
 
-    wordOfTheDay.split("").forEach((letter)=>{
+    decrypt(wordOfTheDay).split("").forEach((letter)=>{
       const val = letter.toLowerCase();
       if(val in trackLetter){
         trackLetter[val]++;
@@ -196,7 +277,7 @@ const AppBoardComponent = () => {
       (col, index) => {
         let newStatus = "";
         let char = col.value.toLowerCase();
-        if (wordOfTheDay.includes(char) && char !== wordOfTheDay[index]) {
+        if (decrypt(wordOfTheDay).includes(char) && char !== decrypt(wordOfTheDay)[index]) {
           
           
           if(misplaced[char]){
@@ -209,7 +290,7 @@ const AppBoardComponent = () => {
          
           
         } 
-        else if (char === wordOfTheDay[index]) {
+        else if (char === decrypt(wordOfTheDay)[index]) {
   
     
           newStatus = "correct";
@@ -237,7 +318,7 @@ const AppBoardComponent = () => {
     const finalVerdictedBoardStatRow = verdictedBoardStatRow.map((col,index)=>{
 
       const currentChar = col.value.toLowerCase();
-      if(misplaced[currentChar]>0 && wordOfTheDay.includes(currentChar) && wordOfTheDay[index]!==currentChar ){
+      if(misplaced[currentChar]>0 && decrypt(wordOfTheDay).includes(currentChar) && decrypt(wordOfTheDay)[index]!==currentChar ){
 
         const foundCorrectCharList = copiedVerdictBoardStatRow.filter((m)=>{
 
@@ -434,7 +515,7 @@ const AppBoardComponent = () => {
     });
   });
 
-  //console.log("board", boardStat);
+  console.log("board", boardStat);
 
   return (
     <Container>
